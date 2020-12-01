@@ -19,10 +19,10 @@ sns.set_style('white')
 
 def get_train_args():
     """
-    Retrieves and parses the 7 command line arguments provided by the user when
+    Retrieves and parses the 8 command line arguments provided by the user when
     they run the train.py program from a terminal window. This function uses Python's 
-    argparse module to created and defined these 7 command line arguments. If 
-    the user fails to provide some or all of the 7 arguments, then the default 
+    argparse module to created and defined these 8 command line arguments. If 
+    the user fails to provide some or all of the 8 arguments, then the default 
     values are used for the missing arguments. 
     Command Line Arguments:
         1. Image Folder as --dir 
@@ -32,6 +32,7 @@ def get_train_args():
         5. A list of hidden units to use in model classifier block as --hidden units
         6. An integer number as --epochs with default value 10
         7. A boolean to switch the use of gpu for training as --gpu with default value False
+        8. A boolean to plot the model summary or not
     This function returns these arguments as an ArgumentParser object.
     Param: None - simply using argparse module to create & store command line arguments
     Returns:
@@ -40,7 +41,7 @@ def get_train_args():
     # Create Parse using ArgumentParser
     parser = argparse.ArgumentParser(
         description='Trains a new network on a dataset and save the model as a checkpoint.')
-    # Create 7 command line arguments as mentioned above using add_argument() from ArguementParser method
+    # Create 8 command line arguments as mentioned above using add_argument() from ArguementParser method
     parser.add_argument('data_dir',
                         type=str,
                         help='path to the folder of the data')
@@ -78,6 +79,11 @@ def get_train_args():
                         action="store_true",
                         default=False,
                         help='Use GPU for training')
+
+    parser.add_argument('--plot_summary',
+                        action="store_true",
+                        default=False,
+                        help='Plot the model summary')
 
     # Return pasrer object containing the argumnts
     return parser.parse_args()
@@ -151,7 +157,7 @@ def plot_model_summary(model_summary):
     ax[0].set_xlabel('Epoch', fontdict={'fontsize': 14})
     ax[0].set_ylabel('Loss', fontdict={'fontsize': 14})
     ax[0].set_ylim(0)
-    ax[0].legend(['Training', 'Validation']);
+    ax[0].legend(['Training', 'Validation'])
     ax[1].plot(model_summary.train_acc, color='#40e580')
     ax[1].plot(model_summary.valid_acc, color='#00334e')
     ax[1].spines['top'].set_visible(False)
@@ -163,3 +169,29 @@ def plot_model_summary(model_summary):
     ax[1].set_ylim(0)
     ax[1].legend(['Training', 'Validation'])
     plt.show()
+
+
+def process_image(image):
+    """ 
+    Scales, crops, and normalizes a PIL image for a PyTorch model
+    param: image (str): Path for the image to preprocess
+    returns: preproccessed image 
+    """
+    
+    # Process a PIL image for use in a PyTorch model
+    # First load the image
+    img = Image.open(image)
+    
+    # Setup the normalizer
+    normalizer = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                      std=[0.229, 0.224, 0.225])
+    
+    # Setting up image preprocessor
+    img_transform = transforms.Compose([transforms.Resize((224, 224)), # Resize the image to 244x244
+                                        transforms.ToTensor(), # Convert the numpy array that contains the image into a tensor
+                                        normalizer]) # Apply the normalizer
+    
+    # Apply the preprocessing to the image 
+    preproccessed_img = img_transform(img)
+    
+    return preproccessed_img
