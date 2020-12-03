@@ -155,6 +155,9 @@ class Classifier():
         # Setting early stopping count
         early_stopping_count = 0
 
+        # Setting model's best weights
+        self.best_weights = self.model.state_dict()
+
         end_epoch = n_epochs + self.start_epoch - 1
         for epoch in range(self.start_epoch, end_epoch + 1):
             with tqdm(total=len(image_datasets['train'])) as t_epoch_pbar:
