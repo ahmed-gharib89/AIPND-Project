@@ -225,13 +225,15 @@ def get_dataloaders(data_dir, image_size=224, batch_size=64):
                       'valid': valid_data,
                       'test': test_data}
 
+    train_num_workers = 4
+    valid_num_workers = 0
     # prepare data loaders
     train_loader = torch.utils.data.DataLoader(
-        train_data, batch_size=batch_size, shuffle=True)
+        train_data, batch_size=batch_size, shuffle=True, num_workers=train_num_workers)
     valid_loader = torch.utils.data.DataLoader(
-        valid_data, batch_size=batch_size, shuffle=True)
+        valid_data, batch_size=batch_size, shuffle=True, num_workers=valid_num_workers)
     test_loader = torch.utils.data.DataLoader(
-        test_data, batch_size=batch_size, shuffle=True)
+        test_data, batch_size=batch_size, shuffle=True, num_workers=valid_num_workers)
 
     dataloaders = {'train': train_loader,
                    'valid': valid_loader,
