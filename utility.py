@@ -75,7 +75,7 @@ def get_train_args():
     parser.add_argument('--save_dir',
                         dest='save_dir',
                         type=str,
-                        default='.',
+                        default='./models',
                         help="directory to save model's checkpoints")
 
     parser.add_argument('--learning_rate',
